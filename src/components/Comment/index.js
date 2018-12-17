@@ -36,6 +36,16 @@ export default class Comment extends Component {
     });
   }
 
+  _getProcessedContent (content) {
+    return content
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;")
+      .replace(/`([\S\s]+?)`/g, '<code>$1</code>')
+  }
+
   handleDeleteComment = () => {
     if (this.props.onDeleteComment) {
       this.props.onDeleteComment(this.props.index);
@@ -48,8 +58,12 @@ export default class Comment extends Component {
       <div className={styles.comment}>
         <div className={styles.commentUser}>
           <span>{this.props.comment.username}</span>:
+          
         </div>
-        <p>{this.props.comment.content}</p>
+        {/* <p>{this.props.comment.content}</p> */}
+        <p dangerouslySetInnerHTML={{
+            __html: this._getProcessedContent(this.props.comment.content)}} 
+         />
         <span className={styles.commentCreatedtime}>{this.state.timeString}</span>
         <span className={styles.commentDelete} onClick={this.handleDeleteComment}>
           删除
